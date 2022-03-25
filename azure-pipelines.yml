@@ -1,0 +1,35 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: UseDotNet@2
+    inputs:
+      packageType: sdk
+      version: 6.0.x
+
+  - script: dotnet --info
+
+  - script: dotnet publish src/BlazorTestApp.csproj --configuration Release -v d
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: 'src/bin'
+      targetFolder: '$(Build.ArtifactStagingDirectory)/bin'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: 'src/wwwroot'
+      targetFolder: '$(Build.ArtifactStagingDirectory)/wwwroot'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: 'src/obj'
+      targetFolder: '$(Build.ArtifactStagingDirectory)/obj'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathToPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: 'BlazorTestApp'
