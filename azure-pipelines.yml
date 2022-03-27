@@ -11,6 +11,12 @@ steps:
       version: 6.0.x
 
   - script: dotnet --info
+  
+  - script: dotnet tool restore
+
+  # The CSS files needs to be compiled before starting publish
+  # Else they will not be included in published files
+  - script: 'dotnet lsb'
 
   - script: dotnet publish src/BlazorTestApp.csproj --configuration Release -v d
 
